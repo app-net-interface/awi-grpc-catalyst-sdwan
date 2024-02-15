@@ -1,0 +1,104 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: awi-grpc-catalyst-sdwan-config
+  namespace: awi-system
+data:
+  config.yaml: |
+    controllers:
+      sdwan:
+        controller_connection_retries: 200
+        name: cisco-sdwan
+        retries_interval: 5s
+        secure_connection: false
+        url: https://sdwan-vmanage-00.mycelium.cn-automation.net:8443
+        vendor: cisco
+    globals:
+      hostname: 0.0.0.0
+      port: 50051
+      controller_connection_retries: 100
+      db_name: awi.db
+      #log_file: awi.log
+      log_level: DEBUG
+      retries_interval: 2s
+      secure_connection: false
+      #kube_config_file: kubeconfig
+      network_domain_connector: awi # possible options: vManage (default), awi
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: awi-grpc-catalyst-sdwan
+  namespace: awi-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: awi-grpc-catalyst-sdwan
+  template:
+    metadata:
+      labels:
+        app: awi-grpc-catalyst-sdwan
+    spec:
+      imagePullSecrets:
+      - name: ausm-private-registry
+      containers:
+      - name: awi-grpc-catalyst-sdwan
+        image: 229451923406.dkr.ecr.us-west-2.amazonaws.com/ausm/awi-grpc-catalyst-sdwan:0.1
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /app/gcp-key/gcp-key.json 
+        - name: VMANAGE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: vmanage-credentials
+              key: username
+        - name: VMANAGE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: vmanage-credentials
+              key: password
+        volumeMounts:
+        - name: config-volume
+          mountPath: "/root/config/"
+        - name: aws-cred-volume
+          mountPath: "/root/.aws/"
+        - name: gcp-cred-volume
+          mountPath: "/app/gcp-key/"
+        - name: kube-config-volume
+          mountPath: "/root/.kube/"
+      volumes:
+      - name: config-volume
+        configMap:
+          name: awi-grpc-catalyst-sdwan-config
+          items:
+          - key: config.yaml
+            path: config.yaml
+      - name: aws-cred-volume
+        secret:
+          secretName: aws-credentials
+      - name: gcp-cred-volume
+        secret:
+          secretName: gcp-credentials
+      - name: kube-config-volume
+        secret:
+          secretName: kube-config
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: awi-grpc-catalyst-sdwan
+  namespace: awi-system
+spec:
+  type: ClusterIP
+  selector:
+    app: awi-grpc-catalyst-sdwan
+  ports:
+    - protocol: TCP
+      port: 50051
+      targetPort: 50051
+

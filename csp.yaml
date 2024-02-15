@@ -1,0 +1,14 @@
+logger:
+  level: DEBUG
+  componentLevels:
+    gcpClient: ERROR
+  output:
+    stdout: true
+    file: csp.log
+
+providers:
+  aws:
+    region: "us-west-1"
+  gcp:
+    region: "us-east4"
+    project: "gcp-ibngctopoc-nprd-72084"
