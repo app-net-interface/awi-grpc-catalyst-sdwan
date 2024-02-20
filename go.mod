@@ -1,8 +1,13 @@
 module awi-grpc-catalyst-sdwan
 
-go 1.19
+go 1.21.6
+
+toolchain go1.22.0
 
 require (
+	github.com/app-net-interface/awi-grpc v0.0.0-20240219162412-0846eeed6fcb
+	github.com/app-net-interface/awi-infra-guard v0.0.0-20240220162538-0759fbfca836
+	github.com/app-net-interface/catalyst-sdwan-app-client v0.0.0-20240215202245-4a4ae263a5db
 	github.com/boltdb/bolt v1.3.1
 	github.com/golang/mock v1.6.0
 	github.com/sirupsen/logrus v1.9.3
@@ -11,9 +16,6 @@ require (
 	google.golang.org/grpc v1.61.0
 	gopkg.in/docker/docker.v20 v20.10.20
 	k8s.io/api v0.29.1
-	github.com/app-net-interface/awi-grpc v0.0.0-20240208155157-d37eb5ac30da
-	github.com/app-net-interface/awi-infra-guard v0.0.0-20240208153206-1840b68117e3
-	github.com/app-net-interface/catalyst-sdwan-app-client v0.0.0-20240206180902-330bfb752f27
 )
 
 require (
@@ -25,6 +27,7 @@ require (
 	cloud.google.com/go/longrunning v0.5.5 // indirect
 	cloud.google.com/go/resourcemanager v1.9.5 // indirect
 	github.com/BurntSushi/toml v1.3.2 // indirect
+	github.com/app-net-interface/kubernetes-discovery/cluster v0.0.0-20240215203400-e89d319cfad5 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.24.1 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.26.6 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.16.16 // indirect
@@ -120,5 +123,4 @@ require (
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.1 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect
-	github.com/app-net-interface/kubernetes-discovery v0.2.0 // indirect
 )
