@@ -15,23 +15,13 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-FROM golang:1.21.4-alpine3.18 AS builder
+FROM golang:1.22-alpine3.18 AS builder
 
 ARG SSH_PRIVATE_KEY
 
-# Prepare SSH mode for downloading git repositories/dependencies
-RUN mkdir /root/.ssh/
-RUN echo "${SSH_PRIVATE_KEY}" > /root/.ssh/id_rsa
-RUN chmod 600 /root/.ssh/id_rsa
-RUN echo "StrictHostKeyChecking no" >> /root/.ssh/config
+RUN mkdir -p /root/go/src/github.com/awi-grpc-catalyst-sdwan
 
-# Force git to use SSH over HTTPS to avoid password prompt
-RUN apk add git openssh make
-RUN git config --global --add url."git@wwwin-github.cisco.com:".insteadOf "https://wwwin-github.cisco.com/"
-
-RUN mkdir -p /root/go/src/wwwin-github.cisco.com/awi-grpc-catalyst-sdwan
-
-WORKDIR /root/go/src/wwwin-github.cisco.com/awi-grpc-catalyst-sdwan
+WORKDIR /root/go/src/github.com/awi-grpc-catalyst-sdwan
 COPY . .
 
 RUN make build
@@ -40,7 +30,7 @@ RUN make build
 FROM alpine:3.18.4
 
 WORKDIR /root
-COPY --from=builder /root/go/src/wwwin-github.cisco.com/awi-grpc-catalyst-sdwan/bin/awi-grpc-catalyst-sdwan .
+COPY --from=builder /root/go/src/github.com/awi-grpc-catalyst-sdwan/bin/awi-grpc-catalyst-sdwan .
 
 # As k8s mounting makes it hard to create a file from a config map
 # within the directory with already present files, we create a symlink
