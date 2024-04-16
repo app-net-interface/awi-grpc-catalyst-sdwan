@@ -24,6 +24,8 @@ RUN mkdir -p /root/go/src/github.com/awi-grpc-catalyst-sdwan
 WORKDIR /root/go/src/github.com/awi-grpc-catalyst-sdwan
 COPY . .
 
+RUN apk add make
+
 RUN make build
 
 # Second stage: create the runtime image
@@ -31,6 +33,8 @@ FROM alpine:3.18.4
 
 WORKDIR /root
 COPY --from=builder /root/go/src/github.com/awi-grpc-catalyst-sdwan/bin/awi-grpc-catalyst-sdwan .
+
+LABEL org.opencontainers.image.source https://github.com/app-net-interface/awi-grpc-catalyst-sdwan
 
 # As k8s mounting makes it hard to create a file from a config map
 # within the directory with already present files, we create a symlink
