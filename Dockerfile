@@ -24,6 +24,8 @@ RUN mkdir -p /root/go/src/github.com/awi-grpc-catalyst-sdwan
 WORKDIR /root/go/src/github.com/awi-grpc-catalyst-sdwan
 COPY . .
 
+RUN apk add make
+
 RUN make build
 
 # Second stage: create the runtime image
