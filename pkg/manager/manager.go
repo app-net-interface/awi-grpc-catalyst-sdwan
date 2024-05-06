@@ -246,7 +246,7 @@ func (m *Manager) addRequest(ctx context.Context, reqType requestType, data inte
 }
 
 func (m *Manager) ListSites(ctx context.Context) (*awiGrpc.ListSiteResponse, error) {
-	if !m.isConnectionControllerVManage() {
+	if !m.IsConnectionControllerVManage() {
 		return &awiGrpc.ListSiteResponse{}, nil
 	}
 	sites, err := m.client.Site().List(ctx)
@@ -259,7 +259,7 @@ func (m *Manager) ListSites(ctx context.Context) (*awiGrpc.ListSiteResponse, err
 }
 
 func (m *Manager) ListVPCs(ctx context.Context, request *awiGrpc.ListVPCRequest) (*awiGrpc.ListVPCResponse, error) {
-	if !m.isConnectionControllerVManage() {
+	if !m.IsConnectionControllerVManage() {
 		return &awiGrpc.ListVPCResponse{}, nil
 	}
 	var vpcs = make([]*vpc.VPC, 0)
@@ -291,7 +291,7 @@ func (m *Manager) GetMatchedResources(ctx context.Context, appConnection *awiGrp
 }
 
 func (m *Manager) ListVPCTags(ctx context.Context, request *awiGrpc.ListVPCTagRequest) (*awiGrpc.ListVPCResponse, error) {
-	if !m.isConnectionControllerVManage() {
+	if !m.IsConnectionControllerVManage() {
 		return &awiGrpc.ListVPCResponse{}, nil
 	}
 	params := &vpc.ListVPCTagParameters{
@@ -309,7 +309,7 @@ func (m *Manager) ListVPCTags(ctx context.Context, request *awiGrpc.ListVPCTagRe
 }
 
 func (m *Manager) ListVPNs(ctx context.Context, request *awiGrpc.ListVPNRequest) (*awiGrpc.ListVPNResponse, error) {
-	if !m.isConnectionControllerVManage() {
+	if !m.IsConnectionControllerVManage() {
 		return &awiGrpc.ListVPNResponse{}, nil
 	}
 	vpns, err := m.client.VPN().List(ctx, request.Provider)
@@ -321,7 +321,7 @@ func (m *Manager) ListVPNs(ctx context.Context, request *awiGrpc.ListVPNRequest)
 	}, nil
 }
 
-func (m *Manager) isConnectionControllerVManage() bool {
+func (m *Manager) IsConnectionControllerVManage() bool {
 	return m.connManager.GetConnectorType() == connection_controller.VManageConnector
 }
 

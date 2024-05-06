@@ -361,7 +361,24 @@ func (s *Server) ListSites(ctx context.Context, in *awiGrpc.ListSiteRequest) (*a
 }
 
 func (s *Server) ListVPCs(ctx context.Context, in *awiGrpc.ListVPCRequest) (*awiGrpc.ListVPCResponse, error) {
-	return s.mgr.ListVPCs(ctx, in)
+	if s.mgr.IsConnectionControllerVManage() {
+		return s.mgr.ListVPCs(ctx, in)
+	}
+	provider, err := s.strategy.GetProvider(ctx, in.Provider)
+	if err != nil {
+		return nil, err
+	}
+	vpcs, err := provider.ListVPC(ctx, &infrapb.ListVPCRequest{
+		AccountId: in.AccountIDs,
+		Provider:  in.Provider,
+		Region:    in.Region,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &awiGrpc.ListVPCResponse{
+		VPCs: translator.ComputeVPCsToAwiGrpcVPCs(vpcs),
+	}, nil
 }
 
 func (s *Server) ListVPCTags(ctx context.Context, in *awiGrpc.ListVPCTagRequest) (*awiGrpc.ListVPCResponse, error) {

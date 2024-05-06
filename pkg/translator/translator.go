@@ -44,6 +44,21 @@ func ComputeInstancesToAwiGrpcInstances(instances []types.Instance) []*awi.Insta
 	return awiInstances
 }
 
+func ComputeVPCsToAwiGrpcVPCs(vpcs []types.VPC) []*awi.VPC {
+	awiVPCs := make([]*awi.VPC, 0, len(vpcs))
+	for _, vpc := range vpcs {
+		awiVPCs = append(awiVPCs, &awi.VPC{
+			ID:          vpc.ID,
+			Name:        vpc.Name,
+			Region:      vpc.Region,
+			Provider:    vpc.Provider,
+			Labels:      vpc.Labels,
+			AccountName: vpc.AccountID,
+		})
+	}
+	return awiVPCs
+}
+
 func ComputeSubnetsToAwiGrpcSubnets(subnets []types.Subnet) []*awi.Subnet {
 	awiSubnets := make([]*awi.Subnet, 0, len(subnets))
 	for _, subnet := range subnets {
