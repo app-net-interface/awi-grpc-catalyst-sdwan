@@ -302,9 +302,10 @@ func (m *AWIConnectionController) disconnectVPCsWithAWIMultiCloud(ctx context.Co
 	}
 
 	_, err = firstProvider.DisconnectVPC(ctx, types.SingleVPCDisconnectionParams{
-		ConnID: request.ID,
-		VpcID:  request.Source.ID,
-		Region: request.Source.Region,
+		ConnID:   request.ID,
+		ConnName: request.Name,
+		VpcID:    request.Source.ID,
+		Region:   request.Source.Region,
 	})
 	if err != nil {
 		return fmt.Errorf(
@@ -313,9 +314,10 @@ func (m *AWIConnectionController) disconnectVPCsWithAWIMultiCloud(ctx context.Co
 		)
 	}
 	_, err = secondProvider.DisconnectVPC(ctx, types.SingleVPCDisconnectionParams{
-		ConnID: request.ID,
-		VpcID:  request.Destination.ID,
-		Region: request.Destination.Region,
+		ConnID:   request.ID,
+		ConnName: request.Name,
+		VpcID:    request.Destination.ID,
+		Region:   request.Destination.Region,
 	})
 	if err != nil {
 		return fmt.Errorf(
@@ -333,11 +335,12 @@ func (m *AWIConnectionController) disconnectVPCsWithAWISingleCloud(ctx context.C
 	}
 
 	_, err = cloudProvider.DisconnectVPCs(ctx, types.VPCDisconnectionParams{
-		ConnID:  request.ID,
-		Vpc1ID:  request.Source.ID,
-		Vpc2ID:  request.Destination.ID,
-		Region1: request.Source.Region,
-		Region2: request.Destination.Region,
+		ConnID:   request.ID,
+		ConnName: request.Name,
+		Vpc1ID:   request.Source.ID,
+		Vpc2ID:   request.Destination.ID,
+		Region1:  request.Source.Region,
+		Region2:  request.Destination.Region,
 	})
 	return err
 }

@@ -1024,27 +1024,31 @@ func (m *AWIConnectionController) connectVPCsWithAWIMultiCloud(ctx context.Conte
 	}
 
 	firstOutput, err := firstProvider.ConnectVPC(ctx, types.SingleVPCConnectionParams{
-		ConnID: request.ID,
-		VpcID:  request.Source.ID,
-		Region: request.Source.Region,
+		ConnID:   request.ID,
+		ConnName: request.Name,
+		VpcID:    request.Source.ID,
+		Region:   request.Source.Region,
 		Destination: types.DestinationDetails{
 			Provider: strings.ToUpper(request.Destination.Provider),
 			VPC:      request.Destination.ID,
 			Region:   request.Destination.Region,
 		},
+		AllowAllTraffic: request.Destination.DefaultAccess == "allow",
 	})
 	if err != nil {
 		return err
 	}
 	secondOutput, err := secondProvider.ConnectVPC(ctx, types.SingleVPCConnectionParams{
-		ConnID: request.ID,
-		VpcID:  request.Destination.ID,
-		Region: request.Destination.Region,
+		ConnID:   request.ID,
+		ConnName: request.Name,
+		VpcID:    request.Destination.ID,
+		Region:   request.Destination.Region,
 		Destination: types.DestinationDetails{
 			Provider: strings.ToUpper(request.Source.Provider),
 			VPC:      request.Source.ID,
 			Region:   request.Source.Region,
 		},
+		AllowAllTraffic: request.Destination.DefaultAccess == "allow",
 	})
 	if err != nil {
 		return err
@@ -1064,9 +1068,11 @@ func (m *AWIConnectionController) connectVPCsWithAWISingleCloud(ctx context.Cont
 	}
 
 	output, err := cloudProvider.ConnectVPCs(ctx, types.VPCConnectionParams{
-		ConnID: request.ID,
-		Vpc1ID: request.Source.ID,
-		Vpc2ID: request.Destination.ID,
+		ConnID:          request.ID,
+		ConnName:        request.Name,
+		Vpc1ID:          request.Source.ID,
+		Vpc2ID:          request.Destination.ID,
+		AllowAllTraffic: request.Destination.DefaultAccess == "allow",
 	})
 	if err != nil {
 		return err
